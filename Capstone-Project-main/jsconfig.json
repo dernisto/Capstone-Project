@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./client/src/*"],
+      "@shared/*": ["./shared/*"]
+    },
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "checkJs": false
+  },
+  "include": ["client/src/**/*", "shared/**/*", "server/**/*", "drizzle/**/*", "vite.config.js"]
+}

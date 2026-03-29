@@ -1,0 +1,139 @@
+# Query: model
+# ContextLines: 1
+
+42 results - 14 files
+
+Capstone-Project-main\CURSOR_SUPER_PROMPT.md:
+   27  
+   28: ### 1.2 User Model & Auth API
+   29  
+   30: - **Schema** `server/models/User.ts` (Mongoose):
+   31    - `name`, `email` (unique), `password` (hashed, select: false), `role` (`teacher` | `student`), `createdAt`.
+
+   42  
+   43: ### 2.1 Game Session Model
+   44  
+   45: - **Schema** `server/models/GameSession.ts` (or similar):
+   46    - `quizId`, `hostId` (user id), `gamePin` (unique, e.g. 6-char), `status` (`waiting` | `active` | `finished`), `currentQuestionIndex`, `players` (array of `{ playerId, name, score, socketId? }`), `createdAt`.
+
+  128  
+  129: - **TypeScript:** Types for all events, API bodies, and models.
+  130: - **Structure:** Clear `server/models`, `server/routes`, `server/controllers`, `server/sockets` (or `server/middleware` for auth). Reusable frontend hooks (e.g. `useGameSocket`, `useAuth`).
+  131  - **Errors:** Try/catch, 4xx/5xx responses, clear messages. Socket errors acknowledged to client where relevant.
+
+Capstone-Project-main\CURSOR_UPGRADE_PROMPT.md:
+  31  
+  32: **Create:** `server/models/User.ts`, `server/routes/auth.ts`, `server/middleware/auth.ts`
+  33  
+  34: **User model fields:** name, email, password, role (teacher | student), createdAt
+  35  
+
+Capstone-Project-main\client\src\components\AIChatBox.tsx:
+  287  
+  288:           // Reasoning parts (if using reasoning models)
+  289            if (part.type === "reasoning") {
+
+Capstone-Project-main\references\ai-sdk.md:
+   52  
+   53: const model = openai.chat("gemini-2.5-flash");
+   54  ```
+
+   62  | **UIMessage** | Frontend, persistence, useChat | `{ id, role, parts: [...] }` |
+   63: | **ModelMessage** | LLM APIs (streamText, generateText) | `{ role, content }` |
+   64  
+
+   67  ```ts
+   68: import { convertToModelMessages } from "ai";
+   69: const modelMessages = await convertToModelMessages(uiMessages);
+   70  ```
+
+  116  
+  117: Upload files to storage first, then use the URL in message parts. `convertToModelMessages` handles file URLs automatically.
+  118  
+
+  133  
+  134: // 3. Backend: convertToModelMessages handles files automatically
+  135: const modelMessages = await convertToModelMessages(messages);
+  136  // Files are converted to the format the LLM expects
+
+  165  import {
+  166:   streamText, convertToModelMessages, pipeUIMessageStreamToResponse,
+  167    createUIMessageStream, generateId, stepCountIs,
+
+  182  
+  183:       const modelMessages = await convertToModelMessages(previousMessages);
+  184  
+  185        const result = streamText({
+  186:         model: openai.chat("gemini-2.5-flash"),
+  187          system: "You are a helpful assistant.",
+  188:         messages: modelMessages,
+  189          tools,
+
+  297    const result = streamText({
+  298:     model: openai.chat("gemini-2.5-flash"),
+  299      system: "You are a mystical tarot reader...",
+
+  368    const result = streamObject({
+  369:     model: openai.chat("gemini-2.5-flash"),
+  370      schema: suggestionsSchema,
+
+  498    streamText, generateText, generateObject,
+  499:   convertToModelMessages, createUIMessageStream,
+  500    pipeUIMessageStreamToResponse, generateId,
+
+Capstone-Project-main\server\db.ts:
+  6  import { ensureConnected } from "./config/db";
+  7: import { QuizAttempt } from "./models/QuizAttempt";
+  8  
+
+Capstone-Project-main\server\routers.ts:
+  117        const { text } = await generateText({
+  118:         model: openai.chat("deepseek-chat"),
+  119          system: baseSystem,
+
+Capstone-Project-main\server\_core\analytics.ts:
+  3  import { assertApiAuthenticated } from "./httpAuth";
+  4: import { QuizAttempt } from "../models/QuizAttempt";
+  5  
+
+Capstone-Project-main\server\_core\chat.ts:
+  110        const result = streamText({
+  111:         model: openai.chat("deepseek-chat"),
+  112          system:
+
+Capstone-Project-main\server\_core\httpAuth.ts:
+  4  import { ensureConnected } from "../config/db.js";
+  5: import { User } from "../models/User.js";
+  6  import { ENV } from "./env";
+
+Capstone-Project-main\server\_core\pdfQuiz.ts:
+  126        const { text } = await generateText({
+  127:         model: openai.chat("deepseek-chat"),
+  128          system: baseSystem,
+
+Capstone-Project-main\server\_core\voiceTranscription.ts:
+  133      
+  134:     formData.append("model", "whisper-1");
+  135      formData.append("response_format", "verbose_json");
+
+Capstone-Project-main\server\controllers\authController.ts:
+  2  import { SignJWT, jwtVerify } from "jose";
+  3: import { User } from "../models/User.js";
+  4  import { ENV } from "../_core/env.js";
+
+Capstone-Project-main\server\models\QuizAttempt.ts:
+   1: import mongoose, { Schema, type Document, type Model } from "mongoose";
+   2  
+
+  28  
+  29: export const QuizAttempt: Model<IQuizAttempt> =
+  30:   mongoose.models.QuizAttempt ?? mongoose.model<IQuizAttempt>("QuizAttempt", quizAttemptSchema);
+  31  
+
+Capstone-Project-main\server\models\User.ts:
+   1: import mongoose, { Schema, type Document, type Model } from "mongoose";
+   2  import bcrypt from "bcryptjs";
+
+  38  
+  39: export const User: Model<IUser> =
+  40:   mongoose.models.User ?? mongoose.model<IUser>("User", userSchema);
